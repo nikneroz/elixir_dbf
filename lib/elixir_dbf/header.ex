@@ -12,7 +12,7 @@ defmodule ElixirDbf.Header do
       date::size(24),
       records::little-integer-size(32),
       header_size::little-integer-size(16),
-      records_size::little-integer-size(16),
+      record_size::little-integer-size(16),
       _reserved_zeros_1::size(16),
       incomplete_transaction::size(8),
       encryption_flag::size(8),
@@ -27,7 +27,7 @@ defmodule ElixirDbf.Header do
       date: date,
       records: records,
       header_size: header_size,
-      records_size: records_size,
+      record_size: record_size,
       incomplete_transaction: incomplete_transaction,
       encryption_flag: encryption_flag,
       mdx_flag: mdx_flag,
@@ -45,10 +45,10 @@ defmodule ElixirDbf.Header do
         field_block = start_byte <> IO.read(file, @header_size - 1)
 
         <<
-          field_name::binary-size(11),
-          field_type::binary-size(1),
+          name::binary-size(11),
+          type::binary-size(1),
           _displacement::binary-size(4),
-          _field_length::binary-size(1),
+          field_size::integer-size(8),
           _decimal_places::binary-size(1),
           _field_flag::binary-size(1),
           _next::binary-size(4),
@@ -57,10 +57,10 @@ defmodule ElixirDbf.Header do
         >> = field_block
 
         column = %{
-          field_name: String.trim_trailing(field_name, <<0>>),
-          field_type: detect_type(field_type),
+          name: String.trim_trailing(name, <<0>>),
+          type: detect_type(type),
           # displacement: displacement,
-          # field_length: field_length,
+          field_size: field_size,
           # decimal_places: decimal_places,
           # field_flag: field_flag,
           # next: next,
@@ -75,7 +75,7 @@ defmodule ElixirDbf.Header do
     case char do
       "C" -> :string # Character
       "Y" -> :currency # Currency
-      "N" -> :integer # Numeric
+      "N" -> :numeric # Numeric
       "F" -> :float # Float
       "D" -> :date # Date
       "T" -> :datetime # DateTime
@@ -84,8 +84,6 @@ defmodule ElixirDbf.Header do
       "L" -> :boolean # Logical
       "M" -> :memo # Memo
       "G" -> :general # General
-      "C" -> :string # Character (binary)
-      "M" -> :memo_binary # Memo (binary)
       "P" -> :picture # Picture
       "+" -> :autoincrement # Autoincrement (dBase Level 7)
       "O" -> :float # Double (dBase Level 7)
