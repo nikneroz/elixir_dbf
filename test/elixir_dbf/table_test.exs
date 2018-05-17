@@ -6,13 +6,14 @@ defmodule ElixirDbf.TableTest do
   test "cp1251" do
     for file_name <- File.ls!("test/fixtures/") do
       file_path = "test/fixtures/#{file_name}"
-      case file_name =~ ~r/\.dbf$/ && file_name not in ["dbase_30.dbf", "dbase_31.dbf"] do
+      case file_name =~ ~r/\.dbf$/ && file_name in ["dbase_30.dbf", "dbase_31.dbf"] do
         true ->
           encoding =
             case file_name do
               "cp1251.dbf" -> :cp1251
               _ -> :utf8
             end
+          IO.inspect(file_name)
           assert {:ok, _} = Table.read(file_path, encoding)
         false -> :ok
       end

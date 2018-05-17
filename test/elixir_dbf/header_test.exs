@@ -15,7 +15,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 1,
       record_size: 105,
       records: 4,
-      version: 48,
+      version: "Visual FoxPro",
       columns: [
         %{field_size: 4, name: "RN", type: :numeric},
         %{field_size: 100, name: "NAME", type: :string}
@@ -34,7 +34,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 0,
       records: 14,
       record_size: 590,
-      version: 3,
+      version: "dBase III without memo file",
       columns: [
         %{name: "Point_ID", field_size: 12, type: :string},
         %{name: "Type", field_size: 20, type: :string},
@@ -84,7 +84,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 3,
       records: 34,
       record_size: 3907,
-      version: 48,
+      version: "Visual FoxPro",
       columns: [%{field_size: 15, name: "ACCESSNO", type: :string},
        %{field_size: 12, name: "ACQVALUE", type: :numeric},
        %{field_size: 4, name: "APPNOTES", type: :memo},
@@ -245,7 +245,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 1,
       record_size: 95,
       records: 77,
-      version: 49,
+      version: "Visual FoxPro with AutoIncrement field",
       columns: [
         %{field_size: 4, name: "PRODUCTID", type: :integer},
         %{field_size: 40, name: "PRODUCTNAM", type: :string},
@@ -275,7 +275,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 0,
       record_size: 805,
       records: 67,
-      version: 131,
+      version: "dBase III with memo file",
       columns: [
         %{field_size: 19, name: "ID", type: :numeric},
         %{field_size: 19, name: "CATCOUNT", type: :numeric},
@@ -308,7 +308,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 0,
       record_size: 160,
       records: 10,
-      version: 139,
+      version: :unknown,
       columns: [
         %{field_size: 100, name: "CHARACTER", type: :string},
         %{field_size: 20, name: "NUMERICAL", type: :numeric},
@@ -332,7 +332,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 0,
       record_size: 969,
       records: 975,
-      version: 245,
+      version: :unknown,
       columns: [
         %{field_size: 5, name: "NF", type: :numeric},
         %{field_size: 1, name: "SEXE", type: :string},
@@ -418,7 +418,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 3,
       record_size: 283,
       records: 16,
-      version: 48
+      version: "Visual FoxPro"
     }
   end
 
@@ -466,7 +466,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 3,
       record_size: 1845,
       records: 5,
-      version: 48
+      version: "Visual FoxPro"
     }
   end
 
@@ -488,7 +488,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 1,
       record_size: 55,
       records: 3,
-      version: 48
+      version: "Visual FoxPro"
     }
   end
 
@@ -509,7 +509,7 @@ defmodule ElixirDbf.HeaderTest do
       mdx_flag: 1,
       record_size: 55,
       records: 2,
-      version: 48
+      version: "Visual FoxPro"
     }
   end
 end

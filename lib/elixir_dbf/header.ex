@@ -5,10 +5,35 @@ defmodule ElixirDbf.Header do
 
   @header_size 32
 
+  @versions %{
+    "02" => "FoxBase",
+    "03" => "dBase III without memo file",
+    "04" => "dBase IV without memo file",
+    "05" => "dBase V without memo file",
+    "07" => "Visual Objects 1.x",
+    "30" => "Visual FoxPro",
+    "31" => "Visual FoxPro with AutoIncrement field",
+    "43" => "dBASE IV SQL table files, no memo",
+    "63" => "dBASE IV SQL system files, no memo",
+    "7b" => "dBase IV with memo file",
+    "83" => "dBase III with memo file",
+    "87" => "Visual Objects 1.x with memo file",
+    "8b" => "dBase IV with memo file",
+    "8e" => "dBase IV with SQL table",
+    "cb" => "dBASE IV SQL table files, with memo",
+    "f5" => "FoxPro with memo file",
+    "fb" => "FoxPro without memo file"
+  }
+
+  def get_version(version_byte) do
+    hex = Base.encode16(version_byte)
+    @versions[hex] || :unknown
+  end
+
   def parse(file) do
     raw_header = IO.binread(file, @header_size)
     <<
-      version::size(8),
+      version_byte::binary-size(1),
       date::size(24),
       records::little-integer-size(32),
       header_size::little-integer-size(16),
@@ -29,7 +54,7 @@ defmodule ElixirDbf.Header do
     IO.binread(file, header_remains)
 
     %{
-      version: version,
+      version: get_version(version_byte),
       date: date,
       records: records,
       header_size: header_size,
