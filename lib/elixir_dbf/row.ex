@@ -38,7 +38,7 @@ defmodule ElixirDbf.Row do
           end
         end
       x ->
-        IO.puts(x)
+        #IO.inspect(x)
         :error
     end
   end

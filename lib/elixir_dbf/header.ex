@@ -6,7 +6,7 @@ defmodule ElixirDbf.Header do
   @header_size 32
 
   def parse(file) do
-    raw_header = IO.read(file, @header_size)
+    raw_header = IO.binread(file, @header_size)
     <<
       version::size(8),
       date::size(24),
@@ -19,7 +19,7 @@ defmodule ElixirDbf.Header do
       _multi_user_processing::size(96),
       mdx_flag::size(8),
       language_driver_id::size(8),
-      _reserved_zeros_2::size(16)
+      encoding::binary-size(2)
     >> = raw_header
 
     %{
@@ -32,7 +32,8 @@ defmodule ElixirDbf.Header do
       encryption_flag: encryption_flag,
       mdx_flag: mdx_flag,
       language_driver_id: language_driver_id,
-      columns: parse_columns(file)
+      columns: parse_columns(file),
+      # encoding: encoding
     }
   end
 
@@ -42,8 +43,7 @@ defmodule ElixirDbf.Header do
         Enum.reverse(columns)
 
       start_byte ->
-        field_block = start_byte <> IO.read(file, @header_size - 1)
-
+        field_block = start_byte <> IO.binread(file, @header_size - 1)
         <<
           name::binary-size(11),
           type::binary-size(1),
@@ -89,6 +89,7 @@ defmodule ElixirDbf.Header do
       "O" -> :float # Double (dBase Level 7)
       "@" -> :datetime # Timestamp (dBase Level 7)
       "V" -> :string # Varchar type (Visual Foxpro)
+      "0" -> :null_flag
     end
   end
 end
