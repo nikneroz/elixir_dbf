@@ -34,7 +34,10 @@ defmodule ElixirDbf.Row do
               value =
                 case String.trim_leading(field, " ") do
                   "" -> nil
-                  str_int -> String.to_integer(str_int)
+                  str_int ->
+                    integer_size = column.field_size * 8
+                    <<integer::little-integer-size(integer_size)>> = <<56, 0, 0, 0>>
+                    integer
                 end
               {column.name, value}
             :float ->

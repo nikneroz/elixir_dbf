@@ -13,6 +13,7 @@ defmodule ElixirDbf.Header do
     "07" => "Visual Objects 1.x",
     "30" => "Visual FoxPro",
     "31" => "Visual FoxPro with AutoIncrement field",
+    "32" => "Visual FoxPro with field type Varchar or Varbinary",
     "43" => "dBASE IV SQL table files, no memo",
     "63" => "dBASE IV SQL system files, no memo",
     "7b" => "dBase IV with memo file",
@@ -22,6 +23,7 @@ defmodule ElixirDbf.Header do
     "8e" => "dBase IV with SQL table",
     "cb" => "dBASE IV SQL table files, with memo",
     "f5" => "FoxPro with memo file",
+    "e5" => "HiPer-Six format with SMT memo file",
     "fb" => "FoxPro without memo file"
   }
 
@@ -87,6 +89,14 @@ defmodule ElixirDbf.Header do
     "cc" => :cp1257       # Baltic Windows
   }
 
+  @column_flags %{
+    "01" => "System Column (not visible to user)",
+    "02" => "Column can store null values",
+    "04" => "Binary column (for CHAR and MEMO only) ",
+    "06" => "(0x02+0x04) When a field is NULL and binary (Integer, Currency, and Character/Memo fields)",
+    "0C" => "Column is autoincrementing"
+  }
+
   def get_version(version_byte) do
     hex = Base.encode16(version_byte)
     @versions[hex] || :unknown
@@ -149,7 +159,7 @@ defmodule ElixirDbf.Header do
           _displacement::binary-size(4),
           field_size::integer-size(8),
           _decimal_places::binary-size(1),
-          _field_flag::binary-size(1),
+          field_flag::binary-size(1),
           _next::binary-size(4),
           _step::binary-size(1),
           _reserved::binary-size(8)
@@ -161,13 +171,18 @@ defmodule ElixirDbf.Header do
           # displacement: displacement,
           field_size: field_size,
           # decimal_places: decimal_places,
-          # field_flag: field_flag,
+          # field_flag: detect_flag(field_flag),
           # next: next,
           # step: step
         }
 
         parse_columns(file, [column | columns])
     end
+  end
+
+  def detect_flag(field_flag_byte) do
+    hex = Base.encode16(field_flag_byte)
+    @column_flags[hex] || :default
   end
 
   def detect_type(char) do
