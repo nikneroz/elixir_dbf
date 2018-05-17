@@ -22,6 +22,12 @@ defmodule ElixirDbf.Header do
       encoding::binary-size(2)
     >> = raw_header
 
+    columns = parse_columns(file)
+
+    current_cursor = @header_size + (@header_size * length(columns)) + 1
+    header_remains = header_size - current_cursor
+    IO.binread(file, header_remains)
+
     %{
       version: version,
       date: date,
@@ -32,7 +38,7 @@ defmodule ElixirDbf.Header do
       encryption_flag: encryption_flag,
       mdx_flag: mdx_flag,
       language_driver_id: language_driver_id,
-      columns: parse_columns(file),
+      columns: columns,
       # encoding: encoding
     }
   end

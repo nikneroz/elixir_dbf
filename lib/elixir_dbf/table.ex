@@ -5,23 +5,27 @@ defmodule ElixirDbf.Table do
 
   alias ElixirDbf.Header
 
-  def read(path) do
+  def read(path, encoding \\ :utf8) do
     {:ok, file} = File.open(path)
     header = Header.parse(file)
-    IO.inspect(header)
+
     rows =
       for _row_index <- 1..header.records do
         row_block = IO.binread(file, header.record_size)
-        ElixirDbf.Row.parse(row_block, header.columns, header.version)
+        ElixirDbf.Row.parse(row_block, header.columns, header.version, encoding)
       end
-    with <<26>> <- IO.binread(file, 1),
-         :eof <- IO.binread(file, 1)
-    do
-      rows
+
+    case IO.binread(file, 1) do
+      <<26>> -> :eof = IO.binread(file, 1)
+      :eof -> :eof
+    end
+
+    records_amount = header[:records]
+
+    with ^records_amount <- length(rows) do
+      {:ok, rows}
     else
-      e ->
-        #IO.inspect(e)
-        :error
+      e -> e
     end
   end
 

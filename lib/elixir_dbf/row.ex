@@ -3,12 +3,17 @@ defmodule ElixirDbf.Row do
     ElixirDbf row module
   """
 
-  def parse(block, columns, version) do
+  def decode(string, :utf8), do: string
+  def decode(string, encoding), do: :erlyconv.to_unicode(encoding, string)
+
+  def read(stream, chars, encoding), do: stream |> IO.binread(chars) |> decode(encoding)
+
+  def parse(block, columns, version, encoding) do
     {:ok, stream} = StringIO.open(block)
-    case IO.read(stream, 1) do
+    case read(stream, 1, encoding) do
       " " ->
         for column <- columns do
-          field = IO.read(stream, column.field_size)
+          field = read(stream, column.field_size, encoding)
           case column.type do
             :string ->
               value = field |> String.trim_trailing(" ")
@@ -26,19 +31,30 @@ defmodule ElixirDbf.Row do
                 end
               {column.name, value}
             :integer ->
-              value = field |> String.trim_leading(" ") |> String.to_integer
+              value =
+                case String.trim_leading(field, " ") do
+                  "" -> nil
+                  str_int -> String.to_integer(str_int)
+                end
               {column.name, value}
             :float ->
-              value = field |> String.trim_leading(" ") |> String.to_float
+              value =
+                case String.trim_leading(field, " ") do
+                  "" -> nil
+                  str_flt -> String.to_float(str_flt)
+                end
               {column.name, value}
             :date ->
-              value = field |> Timex.parse!("{YYYY}{0M}{D}") |> Timex.to_date
+              value =
+                case Timex.parse(field, "{YYYY}{0M}{D}") do
+                  {:ok, datetime} -> Timex.to_date(datetime)
+                  {:error, _} -> nil
+                end
               {column.name, value}
             _ -> {column.name, column.type, field}
           end
         end
       x ->
-        #IO.inspect(x)
         :error
     end
   end

@@ -1,10 +1,25 @@
 defmodule ElixirDbf.HeaderTest do
   use ExUnit.Case
   doctest ElixirDbf
-  alias ElixirDbf.{Header, Table}
+  alias ElixirDbf.{Header}
 
   test "cp1251" do
-    Table.read("test/fixtures/goods.dbf") |> IO.inspect
+    {:ok, file} = File.open("test/fixtures/cp1251.dbf")
+    header = Header.parse(file)
+    assert header == %{
+      date: 199_175,
+      encryption_flag: 0,
+      header_size: 360,
+      incomplete_transaction: 0,
+      language_driver_id: 201,
+      mdx_flag: 1,
+      record_size: 105,
+      records: 4,
+      version: 48,
+      columns: [
+        %{field_size: 4, name: "RN", type: :numeric},
+        %{field_size: 100, name: "NAME", type: :string}
+      ]}
   end
 
   test "greets the world" do
