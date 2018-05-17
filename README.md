@@ -1,6 +1,10 @@
 # ElixirDbf
 
-**TODO: Add description**
+DBF content read
+
+```elixir
+  {:ok, rows} = ElixirDbf.Table.read(file_path, encoding)
+```
 
 ## Installation
 
