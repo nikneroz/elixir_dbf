@@ -1,6 +1,6 @@
 # ElixirDbf
 
-DBF content read
+Small library for DBF parsing written in pure elixir
 
 ```elixir
   {:ok, rows} = ElixirDbf.Table.read(file_path, encoding)
