@@ -7,6 +7,7 @@ defmodule ElixirDbf.HeaderTest do
     {:ok, file} = File.open("test/fixtures/cp1251.dbf")
     header = Header.parse(file)
     assert header == %{
+      encoding: :utf8,
       date: 199_175,
       encryption_flag: 0,
       header_size: 360,
@@ -26,6 +27,7 @@ defmodule ElixirDbf.HeaderTest do
     {:ok, file} = File.open("test/fixtures/dbase_03.dbf")
     header = Header.parse(file)
     assert header == %{
+      encoding: :utf8,
       date: 329_485,
       encryption_flag: 0,
       header_size: 1025,
@@ -76,6 +78,7 @@ defmodule ElixirDbf.HeaderTest do
     header = Header.parse(file)
 
     assert header == %{
+      encoding: :utf8,
       date: 395_529,
       encryption_flag: 0,
       header_size: 4936,
@@ -237,6 +240,7 @@ defmodule ElixirDbf.HeaderTest do
     {:ok, file} = File.open("test/fixtures/dbase_31.dbf")
     header = Header.parse(file)
     assert header == %{
+      encoding: :utf8,
       date: 133122,
       encryption_flag: 0,
       header_size: 648,
@@ -267,6 +271,7 @@ defmodule ElixirDbf.HeaderTest do
     {:ok, file} = File.open("test/fixtures/dbase_83.dbf")
     header = Header.parse(file)
     assert header == %{
+      encoding: :utf8,
       date: 6753298,
       encryption_flag: 0,
       header_size: 513,
@@ -300,6 +305,7 @@ defmodule ElixirDbf.HeaderTest do
     {:ok, file} = File.open("test/fixtures/dbase_8b.dbf")
     header = Header.parse(file)
     assert header == %{
+      encoding: :cp437,
       date: 6555148,
       encryption_flag: 0,
       header_size: 225,
@@ -324,6 +330,7 @@ defmodule ElixirDbf.HeaderTest do
     {:ok, file} = File.open("test/fixtures/dbase_f5.dbf")
     header = Header.parse(file)
     assert header == %{
+      encoding: :utf8,
       date: 262684,
       encryption_flag: 0,
       header_size: 1921,
@@ -410,6 +417,7 @@ defmodule ElixirDbf.HeaderTest do
         %{field_size: 254, name: "SUBJECT", type: :string},
         %{field_size: 4, name: "NOTES", type: :memo}
       ],
+      encoding: :utf8,
       date: 984092,
       encryption_flag: 0,
       header_size: 488,
@@ -458,6 +466,7 @@ defmodule ElixirDbf.HeaderTest do
         %{field_size: 50, name: "HOME_TOWN", type: :string},
         %{field_size: 254, name: "CONTACTS_I", type: :string}
       ],
+      encoding: :utf8,
       date: 984092,
       encryption_flag: 0,
       header_size: 1224,
@@ -480,6 +489,7 @@ defmodule ElixirDbf.HeaderTest do
         %{field_size: 50, name: "KEY_NAME", type: :string},
         %{field_size: 4, name: "VALUE", type: :integer}
       ],
+      encoding: :utf8,
       date: 984092,
       encryption_flag: 0,
       header_size: 360,
@@ -501,6 +511,7 @@ defmodule ElixirDbf.HeaderTest do
         %{field_size: 4, name: "CONTACT_TY", type: :integer},
         %{field_size: 50, name: "CONTACT_T2", type: :string}
       ],
+      encoding: :utf8,
       date: 984092,
       encryption_flag: 0,
       header_size: 360,
