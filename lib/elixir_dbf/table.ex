@@ -3,6 +3,9 @@ defmodule ElixirDbf.Table do
     ElixirDbf table module
   """
 
+  @enforce_keys [:header, :rows]
+  defstruct [:header, :rows]
+
   alias ElixirDbf.Header
 
   def read(path, encoding \\ nil) do
@@ -23,7 +26,7 @@ defmodule ElixirDbf.Table do
     records_amount = header[:records]
 
     with ^records_amount <- length(rows) do
-      {:ok, rows}
+      {:ok, %__MODULE__{rows: rows, header: header}}
     else
       e -> e
     end

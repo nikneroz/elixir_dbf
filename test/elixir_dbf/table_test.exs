@@ -13,7 +13,7 @@ defmodule ElixirDbf.TableTest do
               "cp1251.dbf" -> :cp1251
               _ -> :utf8
             end
-          assert {:ok, _} = Table.read(file_path, encoding)
+          assert {:ok, %Table{rows: _rows, header: _header}} = Table.read(file_path, encoding)
         false -> :ok
       end
     end
