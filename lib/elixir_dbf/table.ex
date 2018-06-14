@@ -34,5 +34,6 @@ defmodule ElixirDbf.Table do
         else
           e -> e
         end
+    end
   end
 end
