@@ -9,7 +9,7 @@ defmodule ElixirDbf.Table do
   alias ElixirDbf.Header
 
   def read(path, encoding \\ nil) do
-    case File.read(path) do
+    case File.binread(path) do
       {:error, reason} ->
         {:error, reason}
       {:ok, content} ->

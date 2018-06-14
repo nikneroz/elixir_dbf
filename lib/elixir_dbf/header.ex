@@ -147,7 +147,7 @@ defmodule ElixirDbf.Header do
   end
 
   def parse_columns(file, columns \\ []) do
-    case IO.read(file, 1) do
+    case IO.binread(file, 1) do
       "\r" ->
         Enum.reverse(columns)
 
