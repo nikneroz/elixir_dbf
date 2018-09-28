@@ -9,57 +9,65 @@ defmodule ElixirDbf.Row do
 
   def read(stream, chars, encoding), do: stream |> IO.binread(chars) |> decode(encoding)
 
+  def parse_column(_column, :eof), do: nil
+  def parse_column(column, field) do
+    case column.type do
+      :string ->
+        value = field |> String.trim_trailing(" ")
+        {column.name, value}
+      :numeric ->
+        raw_string = field |> String.trim_leading(" ")
+        value =
+          case raw_string do
+            "" -> nil
+            _ ->
+              case Integer.parse(raw_string) do
+                {number, ""} -> number
+                _ -> String.to_float(raw_string)
+              end
+          end
+        {column.name, value}
+      :integer ->
+        value =
+          case String.trim_leading(field, " ") do
+            "" -> nil
+            str_int ->
+              integer_size = column.field_size * 8
+              <<integer::little-integer-size(integer_size)>> = str_int
+              integer
+          end
+        {column.name, value}
+      :float ->
+        value =
+          case String.trim_leading(field, " ") do
+            "" -> nil
+            str_flt -> String.to_float(str_flt)
+          end
+        {column.name, value}
+      :date ->
+        value =
+          case Timex.parse(field, "{YYYY}{0M}{D}") do
+            {:ok, datetime} -> Timex.to_date(datetime)
+            {:error, _} -> nil
+          end
+        {column.name, value}
+      _ -> {column.name, column.type, field}
+    end
+  end
+
+  def parse(:eof, _, _, _), do: nil
   def parse(block, columns, version, encoding) do
     {:ok, stream} = StringIO.open(block)
     case read(stream, 1, encoding) do
       " " ->
-        for column <- columns do
+        columns
+        |> Enum.map(fn column ->
           field = read(stream, column.field_size, encoding)
-          case column.type do
-            :string ->
-              value = field |> String.trim_trailing(" ")
-              {column.name, value}
-            :numeric ->
-              raw_string = field |> String.trim_leading(" ")
-              value =
-                case raw_string do
-                  "" -> nil
-                  _ ->
-                    case Integer.parse(raw_string) do
-                      {number, ""} -> number
-                      _ -> String.to_float(raw_string)
-                    end
-                end
-              {column.name, value}
-            :integer ->
-              value =
-                case String.trim_leading(field, " ") do
-                  "" -> nil
-                  str_int ->
-                    integer_size = column.field_size * 8
-                    <<integer::little-integer-size(integer_size)>> = <<56, 0, 0, 0>>
-                    integer
-                end
-              {column.name, value}
-            :float ->
-              value =
-                case String.trim_leading(field, " ") do
-                  "" -> nil
-                  str_flt -> String.to_float(str_flt)
-                end
-              {column.name, value}
-            :date ->
-              value =
-                case Timex.parse(field, "{YYYY}{0M}{D}") do
-                  {:ok, datetime} -> Timex.to_date(datetime)
-                  {:error, _} -> nil
-                end
-              {column.name, value}
-            _ -> {column.name, column.type, field}
-          end
-        end
-      x ->
-        :error
+          parse_column(column, field)
+        end)
+        |> Enum.reject(&is_nil/1)
+      :eof -> nil
+      _ -> :error
     end
   end
 end

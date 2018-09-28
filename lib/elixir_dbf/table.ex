@@ -15,25 +15,23 @@ defmodule ElixirDbf.Table do
       {:ok, file} ->
         try do
           header = Header.parse(file)
+          header_records_amount = header.records
+          records_range = 1..header_records_amount
 
           rows =
-            for _row_index <- 1..header.records do
+            records_range
+            |> Enum.map(fn _record_number ->
               row_block = IO.binread(file, header.record_size)
               ElixirDbf.Row.parse(row_block, header.columns, header.version, encoding || header.encoding)
-            end
+            end)
+            |> Enum.reject(&is_nil/1)
 
           case IO.binread(file, 1) do
             <<26>> -> :eof = IO.binread(file, 1)
             :eof -> :eof
           end
 
-          records_amount = header[:records]
-
-          with ^records_amount <- length(rows) do
-            {:ok, %__MODULE__{rows: rows, header: header}}
-          else
-            e -> e
-          end
+          {:ok, %__MODULE__{rows: rows, header: header}}
         after
           File.close(file)
         end

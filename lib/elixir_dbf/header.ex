@@ -108,22 +108,21 @@ defmodule ElixirDbf.Header do
   end
 
   def parse(file) do
-    raw_header = IO.binread(file, @header_size)
-    <<
-      version_byte::binary-size(1),
-      date::size(24),
-      records::little-integer-size(32),
-      header_size::little-integer-size(16),
-      record_size::little-integer-size(16),
-      _reserved_zeros_1::size(16),
-      incomplete_transaction::size(8),
-      encryption_flag::size(8),
-      _multi_user_processing::size(96),
-      mdx_flag::size(8),
-      language_driver_id::size(8),
-      _reserved_zeros_2::binary-size(1),
-      encoding_byte::binary-size(1)
-    >> = raw_header
+    header_block = IO.binread(file, @header_size)
+
+    <<version_byte::binary-size(1),         header_block::binary>> = header_block
+    <<date::size(24),                       header_block::binary>> = header_block
+    <<records::little-integer-size(32),     header_block::binary>> = header_block
+    <<header_size::little-integer-size(16), header_block::binary>> = header_block
+    <<record_size::little-integer-size(16), header_block::binary>> = header_block
+    <<_reserved_zeros_1::size(16),          header_block::binary>> = header_block
+    <<incomplete_transaction::size(8),      header_block::binary>> = header_block
+    <<encryption_flag::size(8),             header_block::binary>> = header_block
+    <<_multi_user_processing::size(96),     header_block::binary>> = header_block
+    <<mdx_flag::size(8),                    header_block::binary>> = header_block
+    <<language_driver_id::size(8),          header_block::binary>> = header_block
+    <<_reserved_zeros_2::binary-size(1),    header_block::binary>> = header_block
+    <<encoding_byte::binary-size(1)>>                              = header_block
 
     columns = parse_columns(file)
 
