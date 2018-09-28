@@ -37,7 +37,7 @@ defmodule ElixirDbf.Table do
             {:error, :damaged, data}
           end
         after
-          File.close(file)
+          :ok = File.close(file)
         end
     end
   end
