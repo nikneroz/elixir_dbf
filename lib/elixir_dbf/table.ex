@@ -8,6 +8,18 @@ defmodule ElixirDbf.Table do
 
   alias ElixirDbf.Header
 
+  def read_rows(file, header, encoding, prev_block, rows \\ [])
+  def read_rows(_file, _header, _encoding, :eof, rows), do: Enum.reverse(rows)
+  def read_rows(file, header, encoding, :start, rows) do
+    next_block = IO.binread(file, header.record_size)
+    read_rows(file, header, encoding, next_block, rows)
+  end
+  def read_rows(file, header, encoding, prev_block, rows) do
+    row = ElixirDbf.Row.parse(prev_block, header.columns, header.version, encoding || header.encoding)
+    next_block = IO.binread(file, header.record_size)
+    read_rows(file, header, encoding, next_block, [row | rows])
+  end
+
   def read(path, encoding \\ nil) do
     case File.open(path) do
       {:error, reason} ->
@@ -15,23 +27,14 @@ defmodule ElixirDbf.Table do
       {:ok, file} ->
         try do
           header = Header.parse(file)
-          header_records_amount = header.records
-          records_range = 1..header_records_amount
+          rows = read_rows(file, header, encoding, :start)
+          data = %__MODULE__{rows: rows, header: header}
 
-          rows =
-            records_range
-            |> Enum.map(fn _record_number ->
-              row_block = IO.binread(file, header.record_size)
-              ElixirDbf.Row.parse(row_block, header.columns, header.version, encoding || header.encoding)
-            end)
-            |> Enum.reject(&is_nil/1)
-
-          case IO.binread(file, 1) do
-            <<26>> -> :eof = IO.binread(file, 1)
-            :eof -> :eof
+          if length(rows) == header.records do
+            {:ok, data}
+          else
+            {:error, :damaged, data}
           end
-
-          {:ok, %__MODULE__{rows: rows, header: header}}
         after
           File.close(file)
         end

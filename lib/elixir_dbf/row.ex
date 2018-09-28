@@ -5,7 +5,7 @@ defmodule ElixirDbf.Row do
 
   def decode(string, :utf8), do: string
   def decode(string, encoding) when is_atom(encoding), do: :erlyconv.to_unicode(encoding, string)
-  def decode(string, [from, to]), do: :erlyconv.to_unicode(to, :erlyconv.from_unicode(from, string))
+  def decode(string, [from, to]), do: :erlyconv.to_unicode(to, :erlyconv.to_unicode(from, string))
 
   def read(stream, chars, encoding), do: stream |> IO.binread(chars) |> decode(encoding)
 
@@ -55,18 +55,14 @@ defmodule ElixirDbf.Row do
     end
   end
 
-  def parse(:eof, _, _, _), do: nil
   def parse(block, columns, version, encoding) do
     {:ok, stream} = StringIO.open(block)
     case read(stream, 1, encoding) do
       " " ->
-        columns
-        |> Enum.map(fn column ->
+        for column <- columns do
           field = read(stream, column.field_size, encoding)
           parse_column(column, field)
-        end)
-        |> Enum.reject(&is_nil/1)
-      :eof -> nil
+        end
       _ -> :error
     end
   end
