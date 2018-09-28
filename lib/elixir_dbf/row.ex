@@ -55,7 +55,7 @@ defmodule ElixirDbf.Row do
     end
   end
 
-  def parse(block, columns, version, encoding) do
+  def parse(block, columns, encoding) do
     {:ok, stream} = StringIO.open(block)
     case read(stream, 1, encoding) do
       " " ->

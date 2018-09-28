@@ -10,12 +10,13 @@ defmodule ElixirDbf.Table do
 
   def read_rows(file, header, encoding, prev_block, rows \\ [])
   def read_rows(_file, _header, _encoding, :eof, rows), do: Enum.reverse(rows)
+  def read_rows(_file, _header, _encoding, <<26>>, rows), do: Enum.reverse(rows)
   def read_rows(file, header, encoding, :start, rows) do
     next_block = IO.binread(file, header.record_size)
     read_rows(file, header, encoding, next_block, rows)
   end
   def read_rows(file, header, encoding, prev_block, rows) do
-    row = ElixirDbf.Row.parse(prev_block, header.columns, header.version, encoding || header.encoding)
+    row = ElixirDbf.Row.parse(prev_block, header.columns, encoding || header.encoding)
     next_block = IO.binread(file, header.record_size)
     read_rows(file, header, encoding, next_block, [row | rows])
   end
