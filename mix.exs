@@ -4,7 +4,7 @@ defmodule ElixirDbf.MixProject do
   def project do
     [
       app: :elixir_dbf,
-      version: "0.1.4",
+      version: "0.1.5",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       description: "Small library for DBF parsing written in pure elixir",
