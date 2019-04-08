@@ -35,7 +35,7 @@ defmodule ElixirDbf.Table do
   end
 
   def read_rows_count(file, header, count, encoding, prev_block, rows \\ [])
-  def read_rows_count(_file, _header, 0, _encoding, _prev_block, rows), do: rows
+  def read_rows_count(_file, _header, 0, _encoding, _prev_block, rows), do: Enum.reverse(rows)
   def read_rows_count(_file, _header, _count, _encoding, :eof, rows), do: Enum.reverse(rows)
   def read_rows_count(_file, _header, _count, _encoding, <<26>>, rows), do: Enum.reverse(rows)
   def read_rows_count(file, header, count, encoding, :start, rows) do
