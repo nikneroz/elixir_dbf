@@ -2,6 +2,7 @@
 
 [![Hex pm](https://img.shields.io/hexpm/v/elixir_dbf.svg?style=flat)](https://hex.pm/packages/elixir_dbf)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://img.shields.io/hexpm/dt/elixir_dbf)](https://hex.pm/packages/elixir_dbf)
 
 Small library for DBF parsing written in pure elixir
 
