@@ -4,8 +4,12 @@ defmodule ElixirDbf.Row do
   """
 
   def decode(string, :utf8), do: string
-  def decode(string, encoding) when is_atom(encoding), do: :erlyconv.to_unicode(encoding, string)
-  def decode(string, [from, to]), do: :erlyconv.to_unicode(to, :erlyconv.to_unicode(from, string))
+  def decode(string, encoding) when is_atom(encoding), do: Exconv.to_unicode!(string, encoding)
+  def decode(string, [from, to]) do
+    string
+    |> Exconv.to_unicode!(from)
+    |> Exconv.to_unicode!(to)
+  end
 
   def read(stream, chars, encoding), do: stream |> IO.binread(chars) |> decode(encoding)
 

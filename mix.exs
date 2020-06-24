@@ -9,7 +9,18 @@ defmodule ElixirDbf.MixProject do
       start_permanent: Mix.env() == :prod,
       description: "Small library for DBF parsing written in pure elixir",
       deps: deps(),
+      package: package(),
       source_url: "https://github.com/nikneroz/elixir_dbf"
+    ]
+  end
+
+  defp package do
+    [
+      description: "DBF parsing library for Elixir",
+      licenses: ["MIT"],
+      links: %{
+        GitHub: "https://github.com/nikneroz/elixir_dbf"
+      }
     ]
   end
 
@@ -23,9 +34,10 @@ defmodule ElixirDbf.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
       {:timex, "~> 3.1"},
-      {:erlyconv, github: "eugenehr/erlyconv"},
+      {:exconv, "~> 0.1.0"},
       {:codepagex, "~> 0.1.4"}
 
       # {:dep_from_hexpm, "~> 0.3.0"},
