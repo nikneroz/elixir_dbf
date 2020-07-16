@@ -158,7 +158,7 @@ defmodule ElixirDbf.Header do
           _displacement::binary-size(4),
           field_size::integer-size(8),
           _decimal_places::binary-size(1),
-          field_flag::binary-size(1),
+          _field_flag::binary-size(1),
           _next::binary-size(4),
           _step::binary-size(1),
           _reserved::binary-size(8)

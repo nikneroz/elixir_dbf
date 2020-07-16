@@ -43,7 +43,7 @@ by adding `elixir_dbf` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elixir_dbf, "~> 0.1.8"}
+    {:elixir_dbf, "~> 0.1.10"}
   ]
 end
 ```

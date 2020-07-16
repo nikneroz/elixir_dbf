@@ -4,7 +4,7 @@ defmodule ElixirDbf.MixProject do
   def project do
     [
       app: :elixir_dbf,
-      version: "0.1.9",
+      version: "0.1.10",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       description: "Small library for DBF parsing written in pure elixir",
@@ -35,10 +35,8 @@ defmodule ElixirDbf.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
-      {:timex, "~> 3.1"},
-      {:exconv, "~> 0.1.1"},
-      {:codepagex, "~> 0.1.4"}
+      {:timex, "~> 3.6.2"},
+      {:exconv, "~> 0.1.3"},
 
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
