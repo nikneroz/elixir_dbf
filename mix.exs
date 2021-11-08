@@ -35,7 +35,7 @@ defmodule ElixirDbf.MixProject do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:timex, "~> 3.6.2"},
+      {:timex, "~> 3.7.6"},
       {:exconv, "~> 0.1.3"},
 
       # {:dep_from_hexpm, "~> 0.3.0"},
